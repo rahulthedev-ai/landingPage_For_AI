@@ -3,8 +3,7 @@
 
 ## Description
 
-Briefly describe what your project is about and what problem it solves. Include any key features or technologies used.
-
+A tempelate for AI pages preferably for frontend made in NextJS, TailwindCSS
 ### Table of Contents
 #### Installation
 #### Usage
