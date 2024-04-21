@@ -16,10 +16,10 @@ function ContactPage() {
 
     emailjs
       .sendForm(
-        "service_0ltgc0o",
-        "template_14xsvn4",
+        "serviceid1234",
+        "templateid1234",
         e.target,
-        "5fS7OqpNSMR6Jqt2a"
+        "targetid1234"
       )
       .then(
         (result) => {
