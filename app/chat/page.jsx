@@ -1,10 +1,9 @@
+
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import Image from 'next/image'; 
-import axios from "axios";
+import Image from 'next/image';
 import { Scrollbars } from "react-custom-scrollbars-2";
-import { TailSpin } from "react-loader-spinner";
 import { Button } from "@/components/ui/button";
 import {
   SelectValue,
@@ -18,34 +17,19 @@ import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import Footer from "@/components/footer";
 import { Header } from "@/components/header";
 
+
+
 export default function ChatBot() {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
-  const [selectedModel, setSelectedModel] = useState("llama-2-70b-chat");
+  const [selectedModel, setSelectedModel] = useState("Model-1");
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [chatSessions, setChatSessions] = useState([]);
   const scrollbarsRef = useRef(null);
 
   useEffect(() => {
-    if (chatSessions && chatSessions.length > 0) {
-      const stateToPersist = JSON.stringify(chatSessions);
-      localStorage.setItem("chatSessions", stateToPersist);
-    }
-  }, [chatSessions]);
-
-  useEffect(() => {
-    const storedSessions = localStorage.getItem("chatSessions");
-    console.log("Retrieved from localStorage:", storedSessions); // Debugging
-    if (storedSessions) {
-      const parsedSessions = JSON.parse(storedSessions);
-      console.log("Parsed sessions:", parsedSessions); // Debugging
-      setChatSessions(parsedSessions);
-    }
-    // Retrieve the sidebar state from localStorage
+    // Retrieving the sidebar state from localStorage
     const storedSidebarState = localStorage.getItem("isSidebarVisible");
     if (storedSidebarState !== null) {
-      // Check for null to determine if the key exists
       setIsSidebarVisible(JSON.parse(storedSidebarState));
     }
   }, []);
@@ -53,51 +37,24 @@ export default function ChatBot() {
   const toggleSidebar = () => {
     setIsSidebarVisible((prevState) => {
       const newState = !prevState;
-      localStorage.setItem("isSidebarVisible", JSON.stringify(newState)); // Save the new state to localStorage
+      localStorage.setItem("isSidebarVisible", JSON.stringify(newState));
       return newState;
     });
   };
 
-  // Splitting bot's message into paragraphs for each new line
-  const formatBotResponse = (text) => {
-    return text.split("\n").map((item, index) => <p key={index}>{item}</p>);
-  };
-
-  const handleSendMessage = async () => {
+  const handleSendMessage = () => {
     if (!inputMessage.trim()) return;
 
-    setLoading(true);
     const userMessage = { author: "user", text: inputMessage };
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInputMessage("");
 
-      setLoading(false);
-
-  };
-
-  const handleNewSession = () => {
-    setChatSessions((prevSessions) =>
-      prevSessions.map((session) => ({
-        ...session,
-        isActive: false,
-      }))
-    );
-    setMessages([]);
-  };
-  const handleDeleteSession = (sessionId) => {
-    const updatedSessions = chatSessions.filter(
-      (session) => session.id !== sessionId
-    );
-    setChatSessions(updatedSessions);
-    // Immediately update localStorage after state update
-    localStorage.setItem("chatSessions", JSON.stringify(updatedSessions));
-  };
-
-  const handleDeleteAllSessions = () => {
-    setChatSessions([]);
-    setMessages([]);
-    // Clear the specific localStorage data
-    localStorage.removeItem("chatSessions");
+    // Adding a mock bot response for demonstration purposes
+    const botResponse = {
+      author: "bot",
+      text: "This is a mock response from the bot since there is no backend.",
+    };
+    setMessages((prevMessages) => [...prevMessages, botResponse]);
   };
 
   return (
@@ -107,50 +64,9 @@ export default function ChatBot() {
         {isSidebarVisible && (
           <aside className="w-60 flex flex-col bg-[#1e293b] border-r border-gray-300 h-screen">
             <div className="flex items-center justify-between p-4 border-b border-gray-300">
-              <Button
-                className="bg-gray-200 text-sm py-2 px-4 rounded mr-1"
-                onClick={handleNewSession}
-              >
+              <Button className="bg-gray-200 text-sm py-2 px-4 rounded mr-1">
                 New chat
               </Button>
-              <Button
-                className="bg-red-500 text-sm py-2 px-4 rounded"
-                onClick={handleDeleteAllSessions}
-              >
-                Delete All
-              </Button>
-            </div>
-            <div className="flex-1 overflow-y-auto">
-              {chatSessions
-                .slice()
-                .reverse()
-                .map((session, index) => (
-                  <div
-                    key={index}
-                    className="p-4 cursor-pointer hover:bg-gray-700 flex justify-between"
-                  >
-                    <div
-                      className="flex-1"
-                      onClick={() => setMessages(session.messages)}
-                    >
-                      <div className="font-semibold">{session.topic}</div>
-                      <div className="text-sm text-gray-400">
-                        {session.messages[
-                          session.messages.length - 1
-                        ].text.slice(0, 50)}
-                        {session.messages[session.messages.length - 1].text
-                          .length > 50 && "..."}
-                      </div>
-                    </div>
-                    <TrashIcon
-                      className="w-6 h-6 text-red-500 cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent selecting the session when clicking the delete icon
-                        handleDeleteSession(session.id);
-                      }}
-                    />
-                  </div>
-                ))}
             </div>
           </aside>
         )}
@@ -170,12 +86,8 @@ export default function ChatBot() {
                 <SelectValue placeholder="Select a model" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="llama-2-70b-chat">
-                  Llama-2-70b-chat
-                </SelectItem>
-                <SelectItem value="mistral-8x7b-instruct-v0.1">
-                  Mistral 8x7B
-                </SelectItem>
+                <SelectItem value="Mode-l">Mode-l</SelectItem>
+                <SelectItem value="Model-2">Model-2</SelectItem>
               </SelectContent>
             </Select>
           </header>
@@ -183,12 +95,12 @@ export default function ChatBot() {
             {messages.length === 0 && (
               <div className="flex flex-col justify-center items-center space-y-6">
                 <Image
-                src="/visioneye.gif"
-                alt="Welcome"
-                width={150} // Set width as a prop
-                height={120} // Set height as a prop
-                className="text-black"
-            />
+                  src="/visioneye.gif"
+                  alt="Welcome"
+                  width={150}
+                  height={120}
+                  className="text-black"
+                />
                 <h1 className="text-3xl font-semibold">
                   How can I help you today?
                 </h1>
@@ -228,11 +140,7 @@ export default function ChatBot() {
                           : "bg-purple-900 text-white"
                       }`}
                     >
-                      {msg.author === "bot" ? (
-                        formatBotResponse(msg.text)
-                      ) : (
-                        <p>{msg.text}</p>
-                      )}
+                      <p>{msg.text}</p>
                     </div>
                     {msg.author === "bot" ? (
                       <Avatar>
@@ -242,17 +150,6 @@ export default function ChatBot() {
                     ) : null}
                   </div>
                 ))}
-                {loading && (
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      padding: "10px",
-                    }}
-                  >
-                    <TailSpin color="#FFFFFF" height={20} width={20} />
-                  </div>
-                )}
               </Scrollbars>
             </div>
 
