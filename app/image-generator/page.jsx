@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from "react";
 import Image from 'next/image';
@@ -26,7 +25,7 @@ import Footer from "@/components/footer";
 export default function ImageGeneratorPage() {
   const [prompt, setPrompt] = useState("");
   const [promptError, setPromptError] = useState("");
-  const [selectedModel, setSelectedModel] = useState("playground-v2");
+  const [selectedModel, setSelectedModel] = useState("Model-1");
   const [selectedAspectRatio, setSelectedAspectRatio] = useState("1:1");
   const [imageUrl, setImageUrl] = useState("/placeholder.svg");
   const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +36,7 @@ export default function ImageGeneratorPage() {
       setPromptError("Please enter a creative prompt.");
       return;
     }
-    // Implement image generation logic here (frontend only).
+    // Can implement image generation logic here as frontend part
   };
 
   const handleChange = (e) => {
@@ -50,7 +49,7 @@ export default function ImageGeneratorPage() {
   };
 
   const handleDownload = () => {
-    // Implement image download logic here (frontend only).
+    // Can implement image download logic here as frontend part
   };
 
   return (
@@ -131,11 +130,11 @@ export default function ImageGeneratorPage() {
                 value={selectedModel}
                 onValueChange={setSelectedModel}
               >
-                <DropdownMenuRadioItem value="playground-v2">
-                  Playground V2
+                <DropdownMenuRadioItem value="Model-1">
+                  Model-1
                 </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="kandinsky-2.2">
-                  Kandinsky 2.2
+                <DropdownMenuRadioItem value="Model-2">
+                  Model-2
                 </DropdownMenuRadioItem>
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
